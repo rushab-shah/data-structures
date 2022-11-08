@@ -17,7 +17,7 @@ public class LinkedList<T> implements Iterable<T> {
         }
     }
 
-    //TODO methods:  remove, find index, clear, addAt, removeAt,
+    //TODO methods:  addAt, removeAt,
 
     public void add(T data) {
         if(this.isEmpty()) {
@@ -41,7 +41,7 @@ public class LinkedList<T> implements Iterable<T> {
     // Remove by value
     public void remove(T data) {
         if(!this.isEmpty()) {
-            Node<T> pointer = head;
+            Node<T> pointer = this.head;
             while (pointer!=null) {
                 if(pointer.data.equals(data)) {
                     // Reassign pointers
@@ -62,7 +62,7 @@ public class LinkedList<T> implements Iterable<T> {
 
     public T peekFirst() {
         if(!this.isEmpty()) {
-            return head.data;
+            return this.head.data;
         } else {
             throw new RuntimeException("List is empty");
         }
@@ -70,10 +70,38 @@ public class LinkedList<T> implements Iterable<T> {
 
     public T peekLast() {
         if(!this.isEmpty()) {
-            return tail.data;
+            return this.tail.data;
         } else {
             throw new RuntimeException("List is empty");
         }
+    }
+
+    public void clear() {
+        Node<T> last = this.tail;
+        while (last!=null) {
+            Node<T> temp = last.prev;
+            last.prev = null;
+            last.data = null;
+            temp.next = null;
+            last = temp;
+        }
+        this.head = this.tail = null;
+        this.size = 0;
+        return;
+    }
+
+    // Find index by data
+    public int findIndex(T data) {
+        int index = 0;
+        Node<T> node = this.head;
+        while (node!=null) {
+            if(node.data.equals(data)) {
+                return index;
+            }
+            node = node.next;
+            index +=1;
+        }
+        return -1;
     }
 
     public int size() {
@@ -83,6 +111,19 @@ public class LinkedList<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return new Iterator<T>() {
+            private Node<T> pointer = head;
+            @Override
+            public boolean hasNext() {
+                return pointer.next!=null;
+            }
+
+            @Override
+            public T next() {
+                T data = pointer.data;
+                pointer = pointer.next;
+                return data;
+            }
+        };
     }
 }
